@@ -16,9 +16,10 @@ class Challenge(nn.Module):
         self.conv4 = nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3, padding=1)
 
         # Fully connected layers
-        self.fc1 = nn.Linear(256 * 8 * 8, 512)  # Adjust input size based on your image dimensions
+        # Calculated for final flattened size (256 * 16 * 16) for 64x64 input
+        self.fc1 = nn.Linear(256 * 16 * 16, 512)
         self.fc2 = nn.Linear(512, 256)
-        self.fc3 = nn.Linear(256, 2)  # Output layer for binary classification (Collie vs. Golden Retriever)
+        self.fc3 = nn.Linear(256, 2)  # Output layer for binary classification
 
         # Dropout for regularization
         self.dropout = nn.Dropout(0.5)
@@ -33,11 +34,11 @@ class Challenge(nn.Module):
         x = self.pool(F.relu(self.conv4(x)))
 
         # Flatten for fully connected layers
-        x = x.view(-1, 256 * 8 * 8)
+        x = x.view(x.size(0), -1)  # (batch_size, 256 * 16 * 16)
 
         # Fully connected layers with dropout
         x = self.dropout(F.relu(self.fc1(x)))
         x = self.dropout(F.relu(self.fc2(x)))
-        x = self.fc3(x)  # Output layer without activation for CrossEntropyLoss
+        x = self.fc3(x)  # Output layer with logits
 
         return x

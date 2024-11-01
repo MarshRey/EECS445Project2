@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 import random
-from dataset import get_train_val_test_loaders
+from dataset_challenge import get_train_val_test_loaders
 from model.challenge import Challenge
 from train_common import *
 from utils import config
@@ -16,7 +16,8 @@ def main():
     if check_for_augmented_data("./data"):
         tr_loader, va_loader, te_loader, _ = get_train_val_test_loaders(
             task="target",
-            batch_size=config("challenge.batch_size"), augment=True
+            batch_size=32, 
+            augment=True
         )
     else:
         tr_loader, va_loader, te_loader, _ = get_train_val_test_loaders(
@@ -29,7 +30,7 @@ def main():
 
     # Define loss function and optimizer
     criterion = torch.nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.0001, weight_decay=0.01)
 
     # Early stopping patience
     patience = 10
