@@ -144,7 +144,7 @@ class MultiHeadAttention(nn.Module):
                 # TODO:Perform scaled dot product self attention, refer to formula
                 # TODO: DONE
                 # step 1: compute the dot product of q and k^T
-                scores = torch.matmul(q, k.transpose(1, 0))
+                scores = torch.matmul(q, k.t())
                 
                 # step 2: Scale the scores by the square root of the query size
                 scores = scores / math.sqrt(self.num_features)
